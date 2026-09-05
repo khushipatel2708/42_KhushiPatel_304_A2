@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+ 
+<title>Dashboard</title>
+
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .header {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        margin-bottom: 30px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.20);
+    }
+
+    .logo {
+        width: 65px;
+        height: 65px;
+        margin: 0 auto 15px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    h1 {
+        color: #222;
+        font-size: 30px;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        color: #777;
+        font-size: 14px;
+    }
+
+    #posts {
+        width: 100%;
+    }
+
+    .post {
+        background: rgba(255, 255, 255, 0.97);
+        padding: 25px;
+        margin-bottom: 25px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transition: 0.3s;
+    }
+
+    .post:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.20);
+    }
+
+    .post h2 {
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .post img {
+        display: block;
+        width: 100%;
+        max-width: 500px;
+        max-height: 300px;
+        object-fit: cover;
+        margin-bottom: 18px;
+        border-radius: 12px;
+    }
+
+    .post p {
+        color: #555;
+        line-height: 1.7;
+        font-size: 15px;
+        margin-bottom: 15px;
+    }
+
+    .post p:nth-last-child(1) {
+        color: #667eea;
+        font-size: 14px;
+    }
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        background: #e74c3c;
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 12px rgba(231, 76, 60, 0.30);
+    }
+
+    #posts > p {
+        background: white;
+        padding: 35px;
+        border-radius: 18px;
+        text-align: center;
+        color: #777;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    @media (max-width: 600px) {
+
+        body {
+            padding: 20px 12px;
+        }
+
+        .header {
+            padding: 25px 15px;
+        }
+
+        h1 {
+            font-size: 25px;
+        }
+
+        .post {
+            padding: 20px;
+        }
+
+        .post h2 {
+            font-size: 21px;
+        }
+
+    }
+
+</style>
+ 
+
+</head>
+
+<body>
+
+ 
+<div class="container">
+
+    <div class="header">
+
+        <div class="logo">
+            B
+        </div>
+
+        <h1>My Blog Dashboard</h1>
+
+        <p class="subtitle">
+            Manage your blog posts
+        </p>
+
+    </div>
+
+    <div id="posts"></div>
+
+</div>
+ 
+
+<script>
+
+async function loadPosts() {
+
+    const token =
+        localStorage.getItem("token");
+
+    if (!token) {
+
+        window.location.href =
+            "/login";
+
+        return;
+    }
+
+    const response =
+        await fetch(
+            "/api/posts",
+            {
+                headers: {
+                    Authorization:
+                        "Bearer " + token
+                }
+            }
+        );
+
+    if (!response.ok) {
+
+        localStorage.removeItem("token");
+
+        window.location.href =
+            "/login";
+
+        return;
+    }
+
+    const data =
+        await response.json();
+
+    const container =
+        document.getElementById("posts");
+
+    if (data.data.length === 0) {
+
+        container.innerHTML =
+            "<p>No posts found.</p>";
+
+        return;
+    }
+
+    container.innerHTML =
+        data.data.map(post => {
+
+            return `
+
+                <div class="post">
+
+                    <h2>${post.title}</h2>
+
+                    ${
+                        post.image
+                        ?
+                        `<img src="${post.image}">`
+                        :
+                        ""
+                    }
+
+                    <p>
+                        ${post.content}
+                    </p>
+
+                    <p>
+                        Tags:
+                        ${post.tags.join(", ")}
+                    </p>
+
+                    <button
+                        onclick="deletePost('${post._id}')"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+async function deletePost(id) {
+
+    const token =
+        localStorage.getItem("token");
+
+    const response =
+        await fetch(
+            "/api/posts/" + id,
+            {
+                method: "DELETE",
+
+                headers: {
+                    Authorization:
+                        "Bearer " + token
+                }
+            }
+        );
+
+    const data =
+        await response.json();
+
+    alert(data.message);
+
+    loadPosts();
+}
+
+
+loadPosts();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+ 
+<title>Published Blog Posts</title>
+
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .header {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        margin-bottom: 30px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.20);
+    }
+
+    .logo {
+        width: 65px;
+        height: 65px;
+        margin: 0 auto 15px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    h1 {
+        color: #222;
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        color: #777;
+        font-size: 14px;
+    }
+
+    .post {
+        background: rgba(255, 255, 255, 0.97);
+        margin-bottom: 25px;
+        padding: 25px;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transition: 0.3s;
+    }
+
+    .post:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.20);
+    }
+
+    .post h2 {
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .post img {
+        display: block;
+        width: 100%;
+        max-width: 500px;
+        max-height: 300px;
+        object-fit: cover;
+        margin: 0 auto 18px;
+        border-radius: 12px;
+    }
+
+    .content {
+        color: #555;
+        line-height: 1.7;
+        font-size: 15px;
+        margin-bottom: 15px;
+    }
+
+    .tags {
+        color: #667eea;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .tags strong {
+        color: #333;
+    }
+
+    .author {
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+        color: #888;
+        font-size: 13px;
+    }
+
+    .author strong {
+        color: #555;
+    }
+
+    .empty {
+        background: white;
+        padding: 40px;
+        border-radius: 18px;
+        text-align: center;
+        color: #777;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    @media (max-width: 600px) {
+
+        body {
+            padding: 20px 12px;
+        }
+
+        .header {
+            padding: 25px 15px;
+        }
+
+        h1 {
+            font-size: 25px;
+        }
+
+        .post {
+            padding: 20px;
+        }
+
+        .post h2 {
+            font-size: 21px;
+        }
+
+    }
+
+</style>
+ 
+
+</head>
+
+<body>
+
+ 
+<div class="container">
+
+    <div class="header">
+
+        <div class="logo">
+            B
+        </div>
+
+        <h1>Published Blog Posts</h1>
+
+        <p class="subtitle">
+            Explore our latest published articles
+        </p>
+
+    </div>
+
+
+    <% if (posts.length === 0) { %>
+
+        <div class="empty">
+            <p>No published posts found.</p>
+        </div>
+
+    <% } %>
+
+
+    <% posts.forEach(post => { %>
+
+        <div class="post">
+
+            <h2>
+                <%= post.title %>
+            </h2>
+
+
+            <% if (post.image) { %>
+
+                <img src="<%= post.image %>" alt="Blog Image">
+
+            <% } %>
+
+
+            <p class="content">
+                <%= post.content %>
+            </p>
+
+
+            <p class="tags">
+
+                <strong>Tags:</strong>
+
+                <%= post.tags.join(", ") %>
+
+            </p>
+
+
+            <p class="author">
+
+                <small>
+
+                    Author:
+
+                    <strong>
+                        <%= post.author.name %>
+                    </strong>
+
+                </small>
+
+            </p>
+
+        </div>
+
+    <% }) %>
+
+</div>
+ 
+
+</body>
+
+</html>
